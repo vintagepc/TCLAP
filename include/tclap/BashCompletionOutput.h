@@ -226,8 +226,6 @@ inline void BashCompletionOutput::printOption(Arg* a, std::string mutex)
 
 	std::cout << name << ")\n";
 
-	std::cout << "\t\t\tCOMPREPLY=(";
-
 	std::string arg = a->shortID();
 	// Example arg: "[-A <integer>] ... "
 	size_t pos = arg.rfind(" ... ");
@@ -251,12 +249,13 @@ inline void BashCompletionOutput::printOption(Arg* a, std::string mutex)
 	if (p == 0) // prefix
 	{
 		arg.erase(0,5);
-		std::cout << " $( compgen -f -X '!@(" << arg << ")' -o filenames -o plusdirs -o nospace -- \"$cur\") ";
+		std::cout << "\t\t\t_filedir \"" << arg << "\"\n";
 		arg.clear();
 	}
 	p = arg.find('|');
 	if ( p != std::string::npos )
 	{
+		std::cout << "\t\t\tCOMPREPLY=(";
 		do
 		{
 			arg.replace(p, 1, 1, ' ');
@@ -264,10 +263,8 @@ inline void BashCompletionOutput::printOption(Arg* a, std::string mutex)
 		while ( (p = arg.find_first_of('|', p)) != std::string::npos );
 		quoteSpecialChars(arg);
 		std::cout << " $( compgen -W '" << arg << "' -- \"$cur\") ";
+		std::cout << ")\n";
 	}
-
-	std::cout << ")\n";
-
 	std::cout << "\t\t\treturn\n\t\t\t;;\n";
 }
 
